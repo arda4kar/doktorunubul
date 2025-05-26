@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Doktorunu Bul</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+    h1 { font-size: 24px; margin-bottom: 20px; }
+    .filters { margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+    select { padding: 8px; border-radius: 8px; border: 1px solid #ccc; min-width: 150px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .card .name { font-weight: bold; font-size: 18px; }
+    .card .hospital { color: #666; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Doktorunu Bul</h1>
+  <div class="filters">
+    <select id="cityFilter"><option value="">Şehir</option></select>
+    <select id="branchFilter"><option value="">Branş</option></select>
+    <select id="typeFilter"><option value="">Tür</option></select>
+  </div>
+  <div id="doctorList" class="grid"></div>
+  <script>
+    let doctors = [];
+
+    const cityFilter = document.getElementById("cityFilter");
+    const branchFilter = document.getElementById("branchFilter");
+    const typeFilter = document.getElementById("typeFilter");
+    const doctorList = document.getElementById("doctorList");
+
+    const uniqueSorted = (key) => [...new Set(doctors.map(d => d[key]))].sort((a, b) => a.localeCompare(b, 'tr'));
+
+    function populateFilters() {
+      cityFilter.innerHTML += uniqueSorted("city").map(c => `<option value="${c}">${c}</option>`).join("");
+      branchFilter.innerHTML += uniqueSorted("branch").map(b => `<option value="${b}">${b}</option>`).join("");
+      typeFilter.innerHTML += uniqueSorted("type").map(t => `<option value="${t}">${t}</option>`).join("");
+}
+
+    function renderDoctors() {
+      const city = cityFilter.value;
+      const branch = branchFilter.value;
+      const type = typeFilter.value;
+
+      const filtered = doctors.filter(d =>
+        (!city || d.city === city) &&
+        (!branch || d.branch === branch) &&
+        (!type || d.type === type)
+      );
+
+      doctorList.innerHTML = filtered.map(d => `
+        <div class="card">
+          <div class="name">${d.name}</div>
+          <div>${d.branch}</div>
+          <div>${d.city} - ${d.type}</div>
+          <div class="hospital">${d.hospital}</div>
+        </div>
+      `).join("");
+    }
+
+    function init() {
+      fetch("doctors.json")
+        .then(response => response.json())
+        .then(data => {
+          doctors = data;
+          populateFilters();
+          renderDoctors();
+        });
+    }
+
+    [cityFilter, branchFilter, typeFilter].forEach(el => el.addEventListener("change", renderDoctors));
+
+    init();
+  </script>
+</body>
+</html>
