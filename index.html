@@ -21,6 +21,7 @@
     <select id="cityFilter"><option value="">Şehir</option></select>
     <select id="branchFilter"><option value="">Branş</option></select>
     <select id="typeFilter"><option value="">Tür</option></select>
+    <button id="resetFilters">Filtreleri Temizle</button>
   </div>
   <div id="doctorList" class="grid"></div>
   <script>
@@ -73,6 +74,13 @@
     [cityFilter, branchFilter, typeFilter].forEach(el => el.addEventListener("change", renderDoctors));
 
     init();
+    document.getElementById("resetFilters").addEventListener("click", () => {
+  cityFilter.value = "";
+  branchFilter.value = "";
+  typeFilter.value = "";
+  renderDoctors();
+});
+
   </script>
 </body>
 </html>
