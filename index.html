@@ -13,6 +13,8 @@
     .card { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     .card .name { font-weight: bold; font-size: 18px; }
     .card .hospital { color: #666; font-size: 14px; }
+    button { padding: 8px 12px; border: none; background: #d33; color: white; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #b22; }
   </style>
 </head>
 <body>
@@ -38,7 +40,7 @@
       cityFilter.innerHTML += uniqueSorted("city").map(c => `<option value="${c}">${c}</option>`).join("");
       branchFilter.innerHTML += uniqueSorted("branch").map(b => `<option value="${b}">${b}</option>`).join("");
       typeFilter.innerHTML += uniqueSorted("type").map(t => `<option value="${t}">${t}</option>`).join("");
-}
+    }
 
     function renderDoctors() {
       const city = cityFilter.value;
@@ -51,14 +53,14 @@
         (!type || d.type === type)
       );
 
-      doctorList.innerHTML = filtered.map(d => `
+      doctorList.innerHTML = filtered.map(d => \`
         <div class="card">
-          <div class="name">${d.name}</div>
-          <div>${d.branch}</div>
-          <div>${d.city} - ${d.type}</div>
-          <div class="hospital">${d.hospital}</div>
+          <div class="name">\${d.name}</div>
+          <div>\${d.branch}</div>
+          <div>\${d.city} - \${d.type}</div>
+          <div class="hospital">\${d.hospital}</div>
         </div>
-      `).join("");
+      \`).join("");
     }
 
     function init() {
@@ -73,14 +75,15 @@
 
     [cityFilter, branchFilter, typeFilter].forEach(el => el.addEventListener("change", renderDoctors));
 
-    init();
+    // Filtreleri temizle butonu
     document.getElementById("resetFilters").addEventListener("click", () => {
-  cityFilter.value = "";
-  branchFilter.value = "";
-  typeFilter.value = "";
-  renderDoctors();
-});
+      cityFilter.value = "";
+      branchFilter.value = "";
+      typeFilter.value = "";
+      renderDoctors();
+    });
 
+    init();
   </script>
 </body>
 </html>
